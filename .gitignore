@@ -1,0 +1,9 @@
+*.log
+*.tmp
+*.temp
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+Desktop.ini
+target/
