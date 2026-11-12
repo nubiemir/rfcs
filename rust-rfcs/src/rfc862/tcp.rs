@@ -46,6 +46,8 @@ pub fn serve() -> Result<(), Rfc862Error> {
     let full_addr = get_full_addr();
     let listener = TcpListener::bind(&full_addr).map_err(Rfc862Error::IoError)?;
 
+    println!("tcp listening on: {}", full_addr);
+
     loop {
         let (mut stream, addr) = listener.accept().map_err(Rfc862Error::IoError)?;
 
@@ -65,8 +67,8 @@ pub fn client() -> Result<(), Rfc862Error> {
     let mut buffer = [0; DEFAULT_BUFFER_SIZE];
     loop {
         let mut stdinbuffer = String::new();
-        std::io::stdin().read_line(&mut stdinbuffer);
-        stream.write_all(stdinbuffer.as_bytes());
+        let _ = std::io::stdin().read_line(&mut stdinbuffer);
+        let _ = stream.write_all(stdinbuffer.as_bytes());
 
         let n = stream.read(&mut buffer).map_err(Rfc862Error::IoError)?;
 
