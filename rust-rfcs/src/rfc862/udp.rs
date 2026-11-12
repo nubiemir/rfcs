@@ -33,7 +33,12 @@ pub fn serve() -> Result<(), Rfc862Error> {
 
         println!("new client: {:?}", address);
 
-        echo(&buffer[..size], &socket, &address).unwrap();
+        match echo(&buffer[..size], &socket, &address) {
+            Err(err) => {
+                println!("something went wrong: {:?}", err);
+            }
+            _ => {}
+        }
     }
 }
 

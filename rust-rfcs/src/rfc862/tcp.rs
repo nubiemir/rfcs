@@ -37,8 +37,7 @@ fn read_from_stream(stream: &mut TcpStream) -> Result<[u8; DEFAULT_BUFFER_SIZE],
 }
 
 fn write_to_stream(stream: &mut TcpStream, buffer: Vec<u8>) -> Result<(), Rfc862Error> {
-    let _n = stream.write(&buffer).map_err(Rfc862Error::IoError)?;
-
+    stream.write_all(&buffer).map_err(Rfc862Error::IoError)?;
     Ok(())
 }
 
@@ -52,8 +51,16 @@ pub fn serve() -> Result<(), Rfc862Error> {
         let (mut stream, addr) = listener.accept().map_err(Rfc862Error::IoError)?;
 
         println!("new client: {:?}", addr);
-        thread::spawn(move || {
-            read_from_stream(&mut stream).unwrap();
+        thread::spawn(move || match read_from_stream(&mut stream) {
+            Err(err) if matches!(err, Rfc862Error::ConnectionClosed) => {
+                println!("client connection closed on: {}", addr);
+            }
+
+            Err(err) => {
+                println!("something went wrong: {:?}", err);
+            }
+
+            _ => {}
         });
     }
 }
