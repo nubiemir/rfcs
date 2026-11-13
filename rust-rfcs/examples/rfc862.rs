@@ -1,5 +1,3 @@
-use std::time::{SystemTime, UNIX_EPOCH};
-
 fn main_tcp(args: &[String]) {
     let is_client = args.len() > 2 && args[2] == "client";
     if is_client {
@@ -12,15 +10,7 @@ fn main_tcp(args: &[String]) {
 fn main_udp(args: &[String]) {
     let is_client = args.len() > 2 && args[2] == "client";
     if is_client {
-        let num = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .unwrap()
-            .as_secs()
-            % 10;
-
-        println!("{}", num);
-
-        let _ = rust_rfcs::rfc862::udp::client(num as u8);
+        let _ = rust_rfcs::rfc862::udp::client();
         return;
     }
     let _ = rust_rfcs::rfc862::udp::serve();

@@ -42,10 +42,10 @@ pub fn serve() -> Result<(), Rfc862Error> {
     }
 }
 
-pub fn client(lp: u8) -> Result<(), Rfc862Error> {
+pub fn client() -> Result<(), Rfc862Error> {
     let server_addr = get_full_addr();
 
-    let client_addr = format!("localhost:800{}", lp);
+    let client_addr = format!("localhost:0");
 
     let socket = UdpSocket::bind(&client_addr).map_err(Rfc862Error::IoError)?;
     println!("udp connected");
