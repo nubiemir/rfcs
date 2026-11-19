@@ -10,7 +10,7 @@ fn main_tcp(args: &[String]) {
 fn main_udp(args: &[String]) {
     let is_client = args.len() > 2 && args[2] == "client";
     if is_client {
-        let _ = rust_rfcs::rfc865::upd_client();
+        let _ = rust_rfcs::rfc865::udp_client();
         return;
     }
     let _ = rust_rfcs::rfc865::udp_server();

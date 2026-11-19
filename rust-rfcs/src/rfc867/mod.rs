@@ -5,7 +5,7 @@ use std::{
     time::SystemTime,
 };
 
-const SERVER_ADDR: &'static str = "localhost:8000";
+const SERVER_ADDR: &str = "localhost:8000";
 
 const WEEK_DAYS: [&str; 7] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
@@ -18,7 +18,7 @@ const DAYS_ERA: u128 = 146097;
 const DAYS_MS: u128 = 86400000;
 const HOURS_MS: u128 = 3600000;
 const MIN_MS: u128 = 60000;
-const WEEK_EPOCH_OFFSET: u128 = 4;
+const WEEK_EPOCH_OFFSET: u128 = 3;
 
 #[derive(Debug)]
 #[allow(unused)]
@@ -36,10 +36,10 @@ fn civil_from_days(days: u128) -> (u128, u128, u128) {
     let yoe = (doe - (doe / 1460) + (doe / 36524) - (doe / 146096)) / 365;
     let year = yoe + era * 400;
     let doy = doe - (365 * yoe + yoe / 4 - yoe / 100);
-    let mp = (5 * doy + 5) / 153;
+    let mp = (5 * doy + 2) / 153;
     let month = if mp < 10 { mp + 3 } else { mp - 9 };
-
-    let day = doy - (153 * mp + 2) / 5;
+    let year = year + u128::from(month <= 2);
+    let day = doy - (153 * mp + 2) / 5 + 1;
     (year, month, day)
 }
 
@@ -60,7 +60,7 @@ fn date_generator() -> String {
 
     let (year, month, day) = civil_from_days(days);
     let month = MONTHS[(month - 1) as usize];
-    let week = WEEK_DAYS[((days + WEEK_EPOCH_OFFSET) % 7 - 1) as usize];
+    let week = WEEK_DAYS[((days + WEEK_EPOCH_OFFSET) % 7) as usize];
     let date = format!(
         "{}, {} {}, {} {}:{}:{}:{}-UTC",
         week, year, month, day, hours, minutes, secs, milli
@@ -124,7 +124,7 @@ pub fn tcp_client() -> Result<()> {
     Ok(())
 }
 
-pub fn upd_client() -> Result<()> {
+pub fn udp_client() -> Result<()> {
     let client_addr = format!("localhost:0");
 
     let client_socket = UdpSocket::bind(client_addr).map_err(Rfc867Error::IoError)?;

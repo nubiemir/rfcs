@@ -28,7 +28,7 @@ const QUOTES: [&str; 20] = [
     "The best way out is always through.",
 ];
 
-const SERVER_ADDR: &'static str = "localhost:8000";
+const SERVER_ADDR: &str = "localhost:8000";
 
 #[derive(Debug)]
 #[allow(unused)]
@@ -102,7 +102,7 @@ pub fn tcp_client() -> Result<()> {
     Ok(())
 }
 
-pub fn upd_client() -> Result<()> {
+pub fn udp_client() -> Result<()> {
     let client_addr = format!("localhost:0");
 
     let client_socket = UdpSocket::bind(client_addr).map_err(Rfc865Error::IoError)?;
